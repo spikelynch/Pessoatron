@@ -17,10 +17,10 @@ Each heteronym takes the thirty synthemes and maps them to templates or values a
 9 - country in which they live
 10 - sexuality
 11 - temperament
-12 - vice
+12 - inspiration
 
-13 - sun sign
-14 - moon sign
+13 - profession
+14 - vice
 15 - birth year
 16 - birth month
 17 - birth day
