@@ -5,10 +5,10 @@ Each permutation generates 6 synthematic totals, each of which is five synthemes
 
 Each heteronym takes the thirty synthemes and maps them to templates or values as follows:
 
-1 - name syllable
-2 - name syllable
-3 - name syllable
-4 - name syllable
+1 - christian name 1
+2 - christian name 2
+3 - surname 3
+4 - surname 4
 5 - name syllable
 6 - name syllable
 

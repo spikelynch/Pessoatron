@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import sys, os
+import sys, os, re
 from itertools import permutations
 from collections import Counter
 import pystache
@@ -46,6 +46,8 @@ for i in range(1, len(PERM6) + 1):
 	PERM6D[i] = f'{PERM6[i - 1]}'
 
 
+# utilities for loading templates and rendering output
+
 def load_template(d, f):
 	template = os.path.join(d, f)
 	with open(template, 'r') as fh:
@@ -58,11 +60,24 @@ def write_file(d, f, contents):
 	with open(filepath, 'w') as fh:
 		fh.write(contents)
 
+def render(d, o, filename, values):
+	t = load_template(d, filename)
+	write_file(o, filename, pystache.render(t, values))
 
 
+# utilites for loading vocabulary files
 
-def nspan(i):
-	return f'<span class="s{i}">{i}</span>'
+def load_vocabulary(d, f):
+	filepath = os.path.join(d, f)
+	skip = re.compile(r'(^#.*$|^\s+$)')
+	vocab = []
+	with open(filepath, 'r') as fh:
+		for line in fh:
+			if not skip.match(line):
+				vocab.append(line.rstrip())
+	return vocab
+
+# utilites for stitching together the permutations
 
 def lookup_syntheme(s):
 	c0 = Counter(s)
@@ -72,7 +87,6 @@ def lookup_syntheme(s):
 			return n
 	sys.stderr.write(f"mismatched syntheme {s}\n")
 	return "-"
-
 
 def lookup_synthematic_total(t):
 	c0 = Counter(t)
@@ -90,6 +104,7 @@ def lookup_perm6(p):
 	sys.stderr.write(f"mismatched perm {p}\n")
 	return "-"
 
+# makes the 720 permutations and returns them as a list
 
 def make_permutations():
 	i = 0
@@ -139,10 +154,57 @@ def make_permutations():
 	return results
 
 
+# load the vocabularies
 
-def render(d, o, filename, values):
-	t = load_template(d, filename)
-	write_file(o, filename, pystache.render(t, values))
+def load_vocab(d):
+	vocab = {}
+	for f in os.listdir(d):
+		if f.endswith('.txt'):
+			parts = f.split('.')
+			name = parts[0]
+			vocab[name] = load_vocabulary(d, f)
+	return vocab
+
+
+# convert 'A-O' to 0-14
+
+def pint(perm, pos):
+	return ord(perm[pos]) - 65
+
+# Map one or more values in perm to a value in a vocab.
+# In case of overshooting, wrap around 
+
+def vocab_select(vocab, perm, pos):
+	x = 0
+	e = 1
+	for i in pos:
+		x += pint(perm, i) * e
+		e = e * 15
+	l = len(vocab)
+	while x > l - 1:
+		x = x - l
+	return vocab[x]
+
+
+def make_name(v, perm):
+	surname = vocab_select(v['surnames'], perm, [0, 1])
+	givenname = vocab_select(v['given_names'], perm, [2, 3])
+	return givenname + ' ' + surname
+
+
+
+
+
+
+
+
+# convert a permutation (which is a thirty-character string of the
+# letters A through O) into an imaginary author
+
+def make_poet(vocab, p):
+	return {
+		'name': make_name(vocab, p)
+	}
 
 
 
@@ -153,13 +215,15 @@ ap.add_argument('-o', '--output', default="./output", help="Directory to write o
 
 args =  ap.parse_args()
 
-p = make_permutations()
+v = load_vocab(args.data)
 
-render(args.data, args.output, 'structure.html', { 'permutations': p })
+perms = make_permutations()
 
-#heteronyms = [ make_poet(p) for p in perms ]
+render(args.data, args.output, 'structure.html', { 'permutations': perms })
 
-# render(args.data, args.output, 'index.html', { 'heteronyms': heteronyms})
+heteronyms = [ make_poet(v, p['values']) for p in perms ]
+
+render(args.data, args.output, 'index.html', { 'heteronyms': heteronyms})
 
 
 
