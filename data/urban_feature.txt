@@ -1,0 +1,15 @@
+wall
+roof
+sill
+city
+tower
+window
+castle
+attic
+street
+tramcar
+vendor
+kiosk
+plaza
+bridge
+hut

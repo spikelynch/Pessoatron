@@ -5,6 +5,16 @@ body: {
 	background-color: #eee;
 }
 
+div#main {
+	margin-left: 4em;
+	margin-right: 4em;
+}
+
 p.signature: {
 	font-size: 8pt;
 }
+
+p.dates { 
+	font-size: 80%;
+	font-style: italic
+ }

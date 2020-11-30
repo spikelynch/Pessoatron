@@ -1,0 +1,15 @@
+tobacconist
+shop-keeper
+office boy
+shepherd
+clerk
+butcher
+fisherman
+tram conductor
+waiter
+washerwoman
+concierge
+musician
+greengrocer
+engineer
+accountant

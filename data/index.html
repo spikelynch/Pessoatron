@@ -11,12 +11,13 @@
 		{{#heteronyms}}
 		<div class="heteronym">
 			<h3>{{ name }}</h3>
+			<p class="dates">{{ dates }}</p>
 			<p>{{ biography }}</p>
-			<ol>
+			<ul>
 			{{#poems}}
 				<li>{{.}}</li>
 			{{/poems}}
-			</ol>
+			</ul>
 		</div>
 		{{/heteronyms}}
 	</div>

@@ -167,6 +167,13 @@ def make_permutations():
 	return results
 
 
+# just capitalise first letter
+
+def capfirst(str):
+	return str[:1].upper() + str[1:]
+
+
+
 # load the vocabularies
 
 def load_vocab(d):
@@ -220,13 +227,38 @@ def make_biography(d, v, perm):
 			'aesthetic': 8
 		}
 		)
-	return pystache.render(template, bio)
+	return capfirst(pystache.render(template, bio))
+
+def make_lifespan(p):
+	b = 1882 + ord(p[9]) - 65
+	d = 1927 + ord(p[10]) - 65
+	return f'{b}-{d}'
+
+
+def make_poem(d, v, perm, i):
+	template = load_multi_template(d, 'poem', perm[i]);
+	bio = map_values(v, perm,
+		{
+			'exclamation': i + 1,
+			'mood': i + 2,
+			'phenomenon': i + 3,
+			'psyche': i + 4,
+			'relation': i+ 5, 
+			'touches': i + 6,
+			'tradesman': i + 7,
+			'urban_feature': i + 8
+		}
+		)
+	return capfirst(pystache.render(template, bio))
+
 
 
 def make_poet(d, vocab, p):
 	return {
 		'name': make_name(vocab, p),
 		'biography': make_biography(d, vocab, p),
+		'dates': make_lifespan(p),
+		'poems': [ make_poem(d, vocab, p, o) for o in [5, 13, 9, 21] ],
 		'signature': p
 	}
 

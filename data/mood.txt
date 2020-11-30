@@ -1,0 +1,15 @@
+grief
+joy
+lassitude
+boredom
+weariness
+languor
+calm
+anger
+disgust
+fear
+disquiet
+contempt
+sadness
+horror
+love

@@ -1,0 +1,15 @@
+honest
+poor
+noble
+vulgar
+sad
+happy
+lonely
+tedious
+shy
+hidden
+simple
+fearful
+small
+young
+old

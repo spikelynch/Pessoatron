@@ -1,0 +1,15 @@
+daughter
+son
+husband
+wife
+uncle
+aunt
+father
+mother
+employer
+supervisor
+debtor
+landlord
+confessor
+friend
+enemy
