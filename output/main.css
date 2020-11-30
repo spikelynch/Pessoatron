@@ -1,4 +1,10 @@
 
 // main.css
 
-body: #eee;
+body: {	
+	background-color: #eee;
+}
+
+p.signature: {
+	font-size: 8pt;
+}

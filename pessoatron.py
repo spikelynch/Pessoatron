@@ -52,7 +52,7 @@ def load_template(d, f):
 	template = os.path.join(d, f)
 	with open(template, 'r') as fh:
 		contents = fh.readlines()
-		return '\n'.join(contents)
+		return ''.join(contents)
 	sys.process.exit(-1)
 
 def write_file(d, f, contents):
@@ -64,6 +64,9 @@ def render(d, o, filename, values):
 	t = load_template(d, filename)
 	write_file(o, filename, pystache.render(t, values))
 
+def render_template(d, filename, values):
+	t = load_template(d, filename)
+	return pystache.render(t, values)
 
 # utilites for loading vocabulary files
 
@@ -186,24 +189,35 @@ def vocab_select(vocab, perm, pos):
 	return vocab[x]
 
 
+def map_values(vocab, perm, mappings):
+	values = {}
+	for name, pos in mappings.items():
+		values[name] = vocab_select(vocab[name], perm, [ pos ])
+	return values
+
 def make_name(v, perm):
-	surname = vocab_select(v['surnames'], perm, [0, 1])
-	givenname = vocab_select(v['given_names'], perm, [2, 3])
+	surname = vocab_select(v['surname'], perm, [0, 1])
+	givenname = vocab_select(v['given_name'], perm, [2, 3])
 	return givenname + ' ' + surname
 
+def make_biography(d, v, perm):
+	template = f'biography_{perm[4]}.tmp';
+	bio = map_values(v, perm,
+		{
+			'profession': 5,
+			'personality': 6,
+			'vice': 7,
+			'philosophy': 8
+		}
+		)
+	return render_template(d, template, bio)
 
 
-
-
-
-
-
-# convert a permutation (which is a thirty-character string of the
-# letters A through O) into an imaginary author
-
-def make_poet(vocab, p):
+def make_poet(d, vocab, p):
 	return {
-		'name': make_name(vocab, p)
+		'name': make_name(vocab, p),
+		'biography': make_biography(d, vocab, p),
+		'signature': p
 	}
 
 
@@ -221,7 +235,7 @@ perms = make_permutations()
 
 render(args.data, args.output, 'structure.html', { 'permutations': perms })
 
-heteronyms = [ make_poet(v, p['values']) for p in perms ]
+heteronyms = [ make_poet(args.data, v, p['values']) for p in perms ]
 
 render(args.data, args.output, 'index.html', { 'heteronyms': heteronyms})
 

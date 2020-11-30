@@ -1,0 +1,15 @@
+architect
+flâneur
+engineer
+clerk
+accountant
+tobacconist
+shepherd
+schoolmaster
+customs officer
+grocer
+tram conductor
+doorman
+waiter
+lawyer
+fisherman
