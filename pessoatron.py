@@ -55,6 +55,16 @@ def load_template(d, f):
 		return ''.join(contents)
 	sys.process.exit(-1)
 
+def load_multi_template(d, f, choice):
+	template = os.path.join(d, f + '.tmp')
+	templates = []
+	with open(template, 'r') as fh:
+		templates = fh.readlines()
+		i = ord(choice) - 65;
+		return templates[i].rstrip()
+	sys.process.exit(-1)
+
+
 def write_file(d, f, contents):
 	filepath = os.path.join(d, f)
 	with open(filepath, 'w') as fh:
@@ -201,16 +211,16 @@ def make_name(v, perm):
 	return givenname + ' ' + surname
 
 def make_biography(d, v, perm):
-	template = f'biography_{perm[4]}.tmp';
+	template = load_multi_template(d, 'biography', perm[4]);
 	bio = map_values(v, perm,
 		{
 			'profession': 5,
 			'personality': 6,
 			'vice': 7,
-			'philosophy': 8
+			'aesthetic': 8
 		}
 		)
-	return render_template(d, template, bio)
+	return pystache.render(template, bio)
 
 
 def make_poet(d, vocab, p):
