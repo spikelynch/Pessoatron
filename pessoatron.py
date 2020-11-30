@@ -41,7 +41,6 @@ PERM6 = list(permutations([1, 2, 3, 4, 5, 6]))
 
 PERM6D = {}
 
-STRUCTURE_TEMPLATE = 'structure.html'
 
 for i in range(1, len(PERM6) + 1):
 	PERM6D[i] = f'{PERM6[i - 1]}'
@@ -102,7 +101,7 @@ def make_permutations():
 		i += 1
 		perm['i'] = i
 		perm['p'] = f'{p}'
-		perm['signature'] = ''
+		perm['values'] = ''
 		perm['totals'] = []
 		for tname, t in TOTALS.items():
 			#print('<div class="row">' + tname + ": ")
@@ -124,24 +123,27 @@ def make_permutations():
 				total['synthemes'].append(syntheme)
 				syntheme['name'] = lookup_syntheme(rev)
 				automorphism.append(syntheme['name'])
-				perm['signature'] += syntheme['name']
+				perm['values'] += syntheme['name']
 			autot = lookup_synthematic_total(automorphism)
 			total['automorphism'] = autot
 			perm['totals'].append(total)
 			# print(f"--&gt;{autot}")
 			# print("</div>")
-		if perm['signature'] in find_dups:
-			find_dups[perm['signature']] += 1
-			sys.stderr.write("Duplicate " + perm['signature'] + "\n")
+		if perm['values'] in find_dups:
+			find_dups[perm['values']] += 1
+			sys.stderr.write("Duplicate " + perm['values'] + "\n")
 		else:
-			find_dups[perm['signature']] = 1
+			find_dups[perm['values']] = 1
 			#print(f"<div>{seq}</div>")
 		results.append(perm)
 	return results
 
-def render_structure(d, perms):
-	t = load_template(d, STRUCTURE_TEMPLATE)
-	return pystache.render(t, { 'permutations': perms })
+
+
+def render(d, o, filename, values):
+	t = load_template(d, filename)
+	write_file(o, filename, pystache.render(t, values))
+
 
 
 ap = argparse.ArgumentParser()
@@ -153,6 +155,11 @@ args =  ap.parse_args()
 
 p = make_permutations()
 
-html = render_structure(args.data, p)
+render(args.data, args.output, 'structure.html', { 'permutations': p })
 
-write_file(args.output, 'structure.html', html)
+#heteronyms = [ make_poet(p) for p in perms ]
+
+# render(args.data, args.output, 'index.html', { 'heteronyms': heteronyms})
+
+
+

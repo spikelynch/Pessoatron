@@ -1,0 +1,25 @@
+<html>
+<head>
+<link href="main.css" rel="stylesheet" />
+</head>
+<body>
+
+	<div id="main">
+
+		<h1>Pessoatron</h1>
+
+		{{#heteronyms}}
+		<div class="heteronym">
+			<h3>{{ name }}</h3>
+			<p>{{ biography }}</p>
+			<ol>
+			{{#poems}}
+				<li>{{.}}</li>
+			{{/poems}}
+			</ol>
+		</div>
+		{{/heteronyms}}
+	</div>
+
+</body>
+</html>
